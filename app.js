@@ -1,19 +1,14 @@
-let http = require('http');
-let fs = require('fs');
+var fs = require('fs'),
+    http = require('http');
 
-let handleRequest = (request, response) => {
-    response.writeHead(200, {
-        'Content-Type': 'text/html'
-    });
-    fs.readFile('./index.html', null, function (error, data) {
-        if (error) {
-            response.writeHead(404);
-            respone.write('Whoops! File not found!');
-        } else {
-            response.write(data);
+http.createServer(function (req, res) {
+    fs.readFile(__dirname + req.url, function (err, data) {
+        if (err) {
+            res.writeHead(404);
+            res.end(JSON.stringify(err));
+            return;
         }
-        response.end();
+        res.writeHead(200);
+        res.end(data);
     });
-};
-
-http.createServer(handleRequest).listen(8000);
+}).listen(8080);
